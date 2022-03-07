@@ -14,6 +14,7 @@ target_columns2 = set(df2.columns).intersection(df_target.columns)
 
 t1 = pd.date_range(df1.index[0],df1.index[-1], freq='1s')
 t2 = pd.date_range(df2.index[0],df2.index[-1], freq='1s') 
+tt = pd.date_range(df_target.index[0],df_target.index[-1], freq='1s') 
 
 
 print("fin")
