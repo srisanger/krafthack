@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
 def df_from_folder(folder, filenames=['input_dataset-1.parquet', 'input_dataset-2.parquet', 'prediction_input.parquet'], use_firstdataset:bool=False):
     """
@@ -44,3 +45,18 @@ def rescale_output(df, scaler):
     maxs = scaler[1][df.columns]
     df = (df + 0.5) * (maxs - mins) + mins
     return df
+
+def get_seconds_from_start(df):
+    """
+    Outouts a numpy array of seconds since first timestamp in pandas dataframe.
+    """
+    return np.array(list(map(lambda x: (x - df.index[0]).total_seconds(), df.index))).reshape(-1,1)
+
+def detrend_series(timestamps, series):
+    """
+    Argument timestamps is seconds from first measurement.
+    Outputs coefficient and intercept of input series and a series where linear trend is removed.
+    NB: timestamps must be Nx1 array. Use function reshape(-1,1) to transform 1xN to Nx1.
+    """
+    model = LinearRegression().fit(timestamps,series)
+    return model.coef_, model.intercept_, series - model.coef_*timestamps
