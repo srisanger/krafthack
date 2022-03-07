@@ -58,6 +58,6 @@ def sample(data, nans:object, targets:list, inputlength:int=100, batchsize:int=5
     probabilities /= probabilities.sum()
     i = np.random.choice(indexes, batchsize, p=probabilities, replace=False) # chosen indexes
     # get the sampled dataframe:
-    x = torch.tensor([data.iloc[ii:ii+inputlength].to_numpy() for ii in i], dtype=torch.float).to(device)
-    y = torch.tensor([data.iloc[ii+inputlength:ii+inputlength+1][targets].to_numpy() for ii in i], dtype=torch.float).to(device)
+    x = torch.tensor([data.iloc[ii-inputlength:ii].to_numpy() for ii in i], dtype=torch.float).to(device)
+    y = torch.tensor([data.iloc[ii:ii+1][targets].to_numpy() for ii in i], dtype=torch.float).to(device)
     return x, y
