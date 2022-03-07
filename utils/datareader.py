@@ -1,17 +1,20 @@
 import pandas as pd
 import numpy as np
 
-def df_from_folder(folder, filenames=['input_dataset-1.parquet', 'input_dataset-2.parquet', 'prediction_input.parquet']):
+def df_from_folder(folder, filenames=['input_dataset-1.parquet', 'input_dataset-2.parquet', 'prediction_input.parquet'], use_firstdataset:bool=False):
     """
     read data into pandas and returns the training and target set
     """
     assert len(filenames) == 3
     # read dataframes:
-    df1 = pd.read_parquet(folder+'//'+filenames[0], engine='pyarrow')
-    df2 = pd.read_parquet(folder+'//'+filenames[1], engine='pyarrow')
+    if use_firstdataset:
+        df1 = pd.read_parquet(folder+'//'+filenames[0], engine='pyarrow')
+        df2 = pd.read_parquet(folder+'//'+filenames[1], engine='pyarrow')
+        # combine input dataframes:
+        df = pd.concat((df1,df2))
+    else:
+        df = pd.read_parquet(folder+'//'+filenames[1], engine='pyarrow')
     dfT = pd.read_parquet(folder+'//'+filenames[2], engine='pyarrow')
-    # combine input dataframes:
-    df = pd.concat((df1,df2))
     # change operational modes to integers:
     df['mode'] = (df['mode'] == 'operation')
     dfT['mode'] = (dfT['mode'] == 'operation')
